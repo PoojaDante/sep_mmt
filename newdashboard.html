@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <script>
+    function resizeIframe(obj) {
+        obj.style.height = obj.contentWindow.document.body.scrollHeight + 'px';
+    }
+</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <script src="https://d3js.org/d3.v4.min.js">
+    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,300i,400,700,900" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=PT+Serif" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+    <style>
+    body {
+        font-family: "Lato", sans-serif;
+        font-weight: 400 font-size: 2.4em;
+        color: #000000;
+    }
+
+    a {
+        color: #000000;
+        text-decoration: underline;
+        font-size: 1em;
+
+    }
+
+    path {
+        stroke-width: 2.5px;
+        fill: none;
+    }
+
+    h4 {
+        font-weight: 900;
+        font-size: 1.25em;
+    }
+
+    .slider {
+        width: 100%;
+        align-self: center;
+    }
+
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        border: none;
+    }
+
+    td,
+    th {
+        text-align: left;
+        padding: 8px;
+    }
+
+    td {
+        font-weight: 600;
+        font-size: 0.75em;
+        text-align: left;
+    }
+
+    th {
+        font-weight: 300;
+        font-size: 0.75em;
+        color: #727D83;
+    }
+    
+    span {
+        font-weight: 300;
+/*        font-size: 1em;
+*/        color: #727D83;
+    }
+
+    h5 {
+        font-weight: 900;
+        font-size: 1em;
+    }
+
+    .headings {
+        text-align: left !important;
+        border-bottom: 4px solid #F6921E;
+    }
+
+    /*   p {
+        text-align: center;
+    }*/
+
+
+    h6, #selectmonth {
+        background-size: auto;
+        font-weight: 900;
+        font-size: 0.8em;
+    }
+
+    /*
+    line.track-overlay{
+        stroke: orange;
+        stroke-width: 5px;
+        fill:orange;
+        position:absolute; !important;
+        z-index:-1 !important;
+    }*/
+
+    .index {
+        align-items: center
+    }
+
+    .label {
+        font-size: 0.75em;
+    }
+
+    .ticks {
+        font-size: 10px;
+    }
+
+    .label {
+        font-weight: 400;
+    }
+
+    .track,
+    .track-inset,
+    .track-overlay {
+        stroke-linecap: square;
+        stroke: #F6921E;
+        stroke-width: #F6921E;
+    }
+
+    .track {
+        stroke: #F6921E;
+        stroke-opacity: 0.3;
+        stroke-width: 10px;
+    }
+
+    .track-inset {
+        stroke: #F6921E;
+        stroke-width: 8px;
+    }
+
+    .track-overlay {
+        pointer-events: stroke;
+        stroke-width: 10px;
+        stroke: transparent;
+        cursor: crosshair;
+    }
+
+    .handle {
+        fill: #ffffff;
+        stroke: #F6921E;
+        stroke-opacity: 1;
+        stroke-width: 3px;
+        position: absolute;
+         !important;
+        z-index: -1 !important;
+    }
+
+    #selectmonth, #negativepreposition, #positivepreposition,#neutralpreposition{
+        font-size: 1em;
+        font-weight: 900;
+        font-style: bold;
+
+    }
+
+    #negativecount{
+        font-size: 1.5em;
+        font-weight: 900;
+
+
+    }
+    #positivecount{
+        font-size: 1.5em;
+        font-weight: 900;
+
+
+    }
+    #neutralcount{
+        font-size: 1.5em;
+        font-weight: 900;
+
+
+    }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <br>
+        <h4> MINT MACRO TRACKER </h4>
+        <h6>A comprehensive overview of 16 high-frequency indicators to track India's economic health</h6>
+        <h6><i>Use the slider to see how these indicators performed over the past one year</i></h6>
+        <div id="slider" align="center"></div>
+        <h6 id="counts">In <span id="selectmonth" style="color:black"></span> , <span id="negativecount" style="color:#D72027"></span> indicators <span id="negativepreposition" style="color:black"></span> in red, <span id="positivecount" style="color:#81A43E"> </span> <span id="positivepreposition" style="color:black"></span> in green and <span id="neutralcount" style="color:#F6921E"> </span> <span id="neutralpreposition" style="color:black"></span> in line.</h6>
+        <br>
+        <h5 class="headings"> CONSUMER ECONOMY</h5>
+        <table align="center" cellspacing="0" cellpadding="0">
+            <col width="60%">
+            <col width="20%">
+            <col width="15%">
+            <col width="5%">
+            <tr>
+                <th>Indicator</th>
+                <th>5-year trend</th>
+                <th>Value</th>
+                <th>Change</th>
+            </tr>
+            <tr>
+                <td> <a href="template.html?index=0">Passenger vehicle sales <span>(YoY %)</span></td></a>
+                <td><a href="template.html?index=0" alt= "Click here for more details" title="Click here for more details" ><object id="graph0"></object></a></td>
+                <td id="pvs_value"></td>
+                <td id="pvs_change" align="center"></td>
+            </tr>
+            <tr>
+                <td><a href="template.html?index=1">Tractor sales <span>(YoY %)</span></td></a>
+                <td><a href="template.html?index=1" alt= "Click here for more details" title="Click here for more details" ><object id="graph1"></object></a></td>
+                <td id="ts_value"></td>
+                <td id="ts_change"></td>
+            </tr>
+            <tr>
+                <td><a href="template.html?index=2">Broadband subscriber base <span>(YoY %)</span></td></a>
+                <td><a href="template.html?index=2" alt= "Click here for more details" title="Click here for more details" ><object id="graph2"></object></a></td>
+                <td id="tws_value"></td>
+                <td id="tws_change"></td>
+            </tr>
+            <tr>
+                <td><a href="template.html?index=3">Domestic air passengers <span>(YoY %)</span></td></a>
+                <td><a href="template.html?index=3" alt= "Click here for more details" title="Click here for more details" ><object id="graph3"></object></a></td>
+                <td id="dap_value"></td>
+                <td id="dap_change"></td>
+            </tr>
+        </table>
+        <br>
+        <h5 class="headings"> PRODUCER ECONOMY</h5>
+        <table align="center" cellspacing="0" cellpadding="0">
+            <col width="60%">
+            <col width="20%">
+            <col width="15%">
+            <col width="5%">
+            <tr>
+                <th>Indicator</th>
+                <th>5-year trend</th>
+                <th>Value</th>
+                <th>Change</th>
+            </tr>
+            <tr>
+                <td><a href="template.html?index=4">PMI composite</td></a>
+                <td><a href="template.html?index=4" alt= "Click here for more details" title="Click here for more details" ><object id="graph4"></object></a></td>
+                <td id="pmi_value"></td>
+                <td id="pmi_change"></td>
+            </tr>
+            <tr>
+                <td><a href="template.html?index=5">Core Growth <span>(YoY %)</span></td></a>
+                <td><a href="template.html?index=5" alt= "Click here for more details" title="Click here for more details" ><object id="graph5"></object></a></td>
+                <td id="c_value"></td>
+                <td id="c_change"></td>
+            </tr>
+            <tr>
+                <td><a href="template.html?index=6">Banks non-food credit <span>(YoY %)</span></td></a>
+                <td><a href="template.html?index=6" alt= "Click here for more details" title="Click here for more details" ><object id="graph6"></object></a></td>
+                <td id="bnfc_value"></td>
+                <td id="bnfc_change"></td>
+            </tr>
+            <tr>
+                <td><a href="template.html?index=7">Rail freight traffic <span>(YoY %)</span></td></a>
+                <td><a href="template.html?index=7" alt= "Click here for more details" title="Click here for more details" ><object id="graph7"></object></a></td>
+                <td id="rf_value"></td>
+                <td id="rf_change"></td>
+            </tr>
+        </table>
+        <br>
+        <h5 class="headings"> EXTERNAL SECTOR</h5>
+        <table align="center" cellspacing="0" cellpadding="0">
+            <col width="60%">
+            <col width="20%">
+            <col width="15%">
+            <col width="5%">
+            <tr>
+                <th>Indicator</th>
+                <th>5-year trend</th>
+                <th>Value</th>
+                <th>Change</th>
+            </tr>
+            <tr>
+                <td><a href="template.html?index=8">Import cover <span>(FX reserves in months)</span></td></a>
+                <td><a href="template.html?index=8" alt= "Click here for more details" title="Click here for more details" ><object id="graph8"></object></a></td>
+                <td id="ic_value"></td>
+                <td id="ic_change"></td>
+            </tr>
+            <tr>
+                <td><a href="template.html?index=9">Rupee vs Dollar <span>(%MoM)</span></td></a>
+                <td><a href="template.html?index=9" alt= "Click here for more details" title="Click here for more details" ><object id="graph9"></object></a></td>
+                <td id="rs_value"></td>
+                <td id="rs_change"></td>
+            </tr>
+            <tr>
+                <td><a href="template.html?index=10">Labour-intensive sector exports <span>(YoY %)</span></td></a>
+                <td><a href="template.html?index=10" alt= "Click here for more details" title="Click here for more details" ><object id="graph10"></object></a></td>
+                <td id="cac_value"></td>
+                <td id="cac_change"></td>
+            </tr>
+            <tr>
+                <td><a href="template.html?index=11">Trade Balance <span>(as % of total trade)</span></td></a>
+                <td><a href="template.html?index=11" alt= "Click here for more details" title="Click here for more details" ><object id="graph11"></object></a></td>
+                <td id="tb_value"></td>
+                <td id="tb_change"></td>
+            </tr>
+        </table>
+        <br>
+        <h5 class="headings"> EASE OF LIVING</h5>
+        <table align="center" cellspacing="0" cellpadding="0">
+            <col width="60%">
+            <col width="20%">
+            <col width="15%">
+            <col width="5%">
+            <tr>
+                <th>Indicator</th>
+                <th>5-year trend</th>
+                <th>Value</th>
+                <th>Change</th>
+            </tr>
+            <tr>
+                <td><a href="template.html?index=12">CPI <span>(YoY %)</span>
+                </td></a>
+                <td><a href="template.html?index=12" alt= "Click here for more details" title="Click here for more details" ><object id="graph12"></object></a></td>
+                <td id="cpi_value"></td>
+                <td id="cpi_change"></td>
+            </tr>
+            <tr>
+                <td><a href="template.html?index=13">Core CPI <span>(YoY %)</span></td></a>
+                <td><a href="template.html?index=13" alt= "Click here for more details" title="Click here for more details" ><object id="graph13"></object></a></td>
+                <td id="corecpi_value"></td>
+                <td id="corecpi_change"></td>
+            </tr>
+            <tr>
+                <td><a href="template.html?index=14">Real rural wage growth <span>(YoY %)</span></td></a>
+                <td><a href="template.html?index=14" alt= "Click here for more details" title="Click here for more details" ><object id="graph14"></object></a></td>
+                <td id="rw_value"></td>
+                <td id="rw_change"></td>
+            </tr>
+            <tr>
+                <td><a href="template.html?index=15">Job Outlook <span>(net response %)</span></td></a>
+                <td><a href="template.html?index=15" alt= "Click here for more details" title="Click here for more details" ><object id="graph15"></object></a></td>
+                <td id="jo_value"></td>
+                <td id="jo_change"></td>
+            </tr>
+        </table>
+        <br>
+        <p align="left"> All data as of 25th September 2020. </p>
+        <p align="left"> Pooja Dantewadia and Sriharsha Devulapalli/Mint </p>
+    </div>
+    <script>
+    d3.json("dashboard-rawdata.json", function(error, Data) {
+
+        var formatDateIntoYear = d3.timeFormat("%Y");
+        var formatDate = d3.timeFormat("%b %Y");
+
+        var formatDateIntoMonth = d3.timeFormat("%b")
+
+
+        var startDate = new Date("2019-08-15"),
+            endDate = new Date("2020-08-15");
+
+        var margin = { top: 0, right: 50, bottom: 0, left: 50 },
+            width = 375 - margin.left - margin.right,
+            height = 75 - margin.top - margin.bottom;
+
+        var svg = d3.select("#slider")
+            .append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height);
+
+        var x = d3.scaleTime()
+            .domain([startDate, endDate])
+            .range([0, width, width/12])
+            .clamp(true);
+
+
+        var slider = svg.append("g")
+            .attr("class", "slider")
+            .attr("transform", "translate(" + margin.left + "," + height / 2 + ")");
+
+        slider.append("line")
+            .attr("class", "track")
+            .attr("x1", x.range()[0])
+            .attr("x2", x.range()[1])
+            .select(function() { return this.parentNode.appendChild(this.cloneNode(true)); })
+            .attr("class", "track-inset")
+            .select(function() { return this.parentNode.appendChild(this.cloneNode(true)); })
+            .attr("class", "track-overlay")
+            .call(d3.drag()
+                .on("start.interrupt", function() { slider.interrupt(); })
+                .on("start drag", function() { hue(x.invert(d3.event.x)); }));
+
+
+
+        selectticks=[]
+        selectticks.push(new Date(2019, 7, 1))
+        selectticks.push(new Date(2020, 1, 1))
+        selectticks.push(new Date(2020, 7, 1))
+
+    
+        slider.insert("g", ".track-overlay")
+            .attr("class", "ticks")
+            .attr("transform", "translate(0," + 18 + ")")
+            .selectAll("text")
+            .data(selectticks)
+            .enter()
+            .append("text")
+            .attr("x", x)
+            .attr("y", 10)
+            .attr("text-anchor", "middle")
+            .text(function(d) { return formatDateIntoMonth(d); });
+
+
+
+        var label = slider.append("text")
+            .attr("class", "label")
+            .attr("text-anchor", "middle")
+            .text(formatDate(startDate))
+            .attr("transform", "translate(0," + (-25) + ")")
+
+
+        var handle = slider.insert("circle", ".track-overlay")
+            .attr("class", "handle")
+            .attr("r", 9);
+
+        slider.transition() // Gratuitous intro!
+            .duration(750)
+            .tween("hue", function() {
+                var i = d3.interpolate(startDate, endDate);
+                return function(t) { hue(i(t)); };
+            })
+
+
+        for (i = 0; i < 16; i++) {
+            if (i == 12 || i == 13) {
+                drawReverse(i)
+            } else {
+                draw(i)
+            }
+
+        }
+
+        function draw(variable) {
+
+
+            var graph = d3.select("#graph" + variable.toString()).append("svg:svg").attr("width", "100px").attr("height", "30px");
+
+            var temparray = Data.data[variable].values
+
+            data = []
+            for (var i = 0; i < temparray.length; i++) {
+                data.push(temparray[i].Value)
+            }
+
+            var lowerrange = Data.data[variable].lowerrange
+
+            var upperrange = Data.data[variable].upperrange
+
+            var max_of_array = Math.max.apply(Math, data)
+            var min_of_array = Math.min.apply(Math, data)
+
+
+            // X scale will fit values from 0-10 within pixels 0-100
+            var x = d3.scaleLinear().domain([0, temparray.length]).range([0, 100]);
+            // Y scale will fit values from 0-10 within pixels 0-100
+            var y = d3.scaleLinear().domain([min_of_array, max_of_array]).range([30, 0]);
+
+
+
+            var line = d3.line()
+                .x(function(d, i) {
+                    return x(i);
+                })
+                .y(function(d) {
+                    return y(d);
+                })
+                .curve(d3.curveCardinal)
+
+            var upperrangeper = ((upperrange) / 30) * 100
+            var lowerrangeper = ((lowerrange) / 30) * 100
+
+
+            var linearGradient = graph.append("defs")
+                .append("linearGradient")
+                .attr("id", "linear-gradient")
+                .attr("gradientUnits", "userSpaceOnUse")
+                .attr("x1", 0).attr("y1", y(0))
+                .attr("x2", 0).attr("y2", y(30));
+
+            linearGradient.append("stop")
+                .attr("offset", "0%")
+                .attr("stop-color", "#D72027")
+
+
+            linearGradient.append("stop")
+                .attr("offset", lowerrangeper + "%")
+                .attr("stop-color", "#D72027")
+
+            linearGradient.append("stop")
+                .attr("offset", lowerrangeper + "%")
+                .attr("stop-color", "#F6921E");
+
+            linearGradient.append("stop")
+                .attr("offset", upperrangeper + "%")
+                .attr("stop-color", "#F6921E");
+
+            linearGradient.append("stop")
+                .attr("offset", upperrangeper + "%")
+                .attr("stop-color", "#81A43E");
+
+            linearGradient.append("stop")
+                .attr("offset", "100%")
+                .attr("stop-color", "#81A43E");
+
+            graph.append("svg:path").attr("d", line(data)).attr("stroke", "url(#linear-gradient)");
+        }
+
+        function drawReverse(variable) {
+
+
+            var graph = d3.select("#graph" + variable.toString()).append("svg:svg").attr("width", "100px").attr("height", "30px");
+
+            var temparray = Data.data[variable].values
+
+            data = []
+            for (var i = 0; i < temparray.length; i++) {
+                data.push(temparray[i].Value)
+            }
+
+
+            var lowerrange = Data.data[variable].lowerrange
+
+            var upperrange = Data.data[variable].upperrange
+
+
+            var max_of_array = Math.max.apply(Math, data)
+            var min_of_array = Math.min.apply(Math, data)
+
+
+            // X scale will fit values from 0-10 within pixels 0-100
+            var x = d3.scaleLinear().domain([0, temparray.length]).range([0, 100]);
+            // Y scale will fit values from 0-10 within pixels 0-100
+            var y = d3.scaleLinear().domain([min_of_array, max_of_array]).range([30, 0]);
+
+
+
+            var line = d3.line()
+                .x(function(d, i) {
+                    return x(i);
+                })
+                .y(function(d) {
+                    return y(d);
+                })
+                .curve(d3.curveCardinal)
+
+            var upperrangeper = ((upperrange) / 30) * 100
+            var lowerrangeper = ((lowerrange) / 30) * 100
+
+
+            var linearGradient2 = graph.append("defs")
+                .append("linearGradient")
+                .attr("id", "linear-gradient2")
+                .attr("gradientUnits", "userSpaceOnUse")
+                .attr("x1", 0).attr("y1", y(0))
+                .attr("x2", 0).attr("y2", y(30));
+
+            linearGradient2.append("stop")
+                .attr("offset", "0%")
+                .attr("stop-color", "#81A43E")
+
+
+            linearGradient2.append("stop")
+                .attr("offset", upperrangeper + "%")
+                .attr("stop-color", "#81A43E")
+
+            linearGradient2.append("stop")
+                .attr("offset", upperrangeper + "%")
+                .attr("stop-color", "#F6921E");
+
+            linearGradient2.append("stop")
+                .attr("offset", lowerrangeper + "%")
+                .attr("stop-color", "#F6921E");
+
+            linearGradient2.append("stop")
+                .attr("offset", lowerrangeper + "%")
+                .attr("stop-color", "#D72027");
+
+            linearGradient2.append("stop")
+                .attr("offset", "100%")
+                .attr("stop-color", "#D72027");
+
+            graph.append("svg:path").attr("d", line(data)).attr("stroke", "url(#linear-gradient2)");
+        }
+
+
+        function Arrowfier(index, value, array, upperrange, lowerrange) {
+
+            if (index == 12 || index == 13) {
+                if ((value > upperrange) &(value < lowerrange)) {
+                    array.push("◀▶")
+                } else if (value < lowerrange) {
+                    array.push("▲")
+                } else if (value > upperrange){
+                    array.push("▼")
+                }
+            } else {
+                if (value > upperrange) {
+                    array.push("▲")
+                } else if (value < lowerrange) {
+                    array.push("▼")
+                } else {
+                    array.push("◀▶")
+                }
+            }
+
+        }
+
+
+
+        function hue(h) {
+
+            var monthlyData = new Array();
+            var monthlyArrows = new Array();
+
+
+            if (error) throw error;
+            var count = 0;
+            for (var key in Data.data) {
+                var array = Data.data[key].values
+                var list_of_dates = new Array();
+                for (var datekey in array) {
+                    list_of_dates.push(array[datekey].Year)
+                }
+
+                var upperrange = Data.data[key].upperrange
+                var lowerrange = Data.data[key].lowerrange
+
+                arraylength = array.length;
+                chosendate = formatDate(h)
+
+                if (list_of_dates.includes(chosendate)) {
+                    for (var i = 0; i < arraylength; i++) {
+                        if (chosendate == (array[i].Year)) {
+                            monthlyData.push(array[i].Value)
+                            Arrowfier(count, array[i].Value, monthlyArrows, upperrange, lowerrange)
+                        }
+                    }
+
+                } else {
+                    monthlyData.push(array[array.length - 1].Value)
+                    Arrowfier(count, array[array.length - 1].Value, monthlyArrows, upperrange, lowerrange)
+
+                }
+
+                count = count + 1;
+
+            }
+
+            handle.attr("cx", x(h));
+            label
+                .attr("x", x(h))
+                .text(formatDate(h));
+
+
+            d3.select("#pvs_value").text(monthlyData[0].toFixed(2))
+            d3.select("#pvs_change").text(monthlyArrows[0])
+            d3.select("#ts_value").text(monthlyData[1].toFixed(2))
+            d3.select("#ts_change").text(monthlyArrows[1])
+            d3.select("#tws_value").text(monthlyData[2].toFixed(2))
+            d3.select("#tws_change").text(monthlyArrows[2])
+            d3.select("#dap_value").text(monthlyData[3].toFixed(2))
+            d3.select("#dap_change").text(monthlyArrows[3])
+            d3.select("#pmi_value").text(monthlyData[4].toFixed(2))
+            d3.select("#pmi_change").text(monthlyArrows[4])
+            d3.select("#c_value").text(monthlyData[5].toFixed(2))
+            d3.select("#c_change").text(monthlyArrows[5])
+            d3.select("#bnfc_value").text(monthlyData[6].toFixed(2))
+            d3.select("#bnfc_change").text(monthlyArrows[6])
+            d3.select("#rf_value").text(monthlyData[7].toFixed(2))
+            d3.select("#rf_change").text(monthlyArrows[7])
+            d3.select("#ic_value").text(monthlyData[8].toFixed(2))
+            d3.select("#ic_change").text(monthlyArrows[8])
+            d3.select("#rs_value").text(monthlyData[9].toFixed(2))
+            d3.select("#rs_change").text(monthlyArrows[9])
+            d3.select("#cac_value").text(monthlyData[10].toFixed(2))
+            d3.select("#cac_change").text(monthlyArrows[10])
+            d3.select("#tb_value").text(monthlyData[11].toFixed(2))
+            d3.select("#tb_change").text(monthlyArrows[11])
+            d3.select("#cpi_value").text(monthlyData[12].toFixed(2))
+            d3.select("#cpi_change").text(monthlyArrows[12])
+            d3.select("#corecpi_value").text(monthlyData[13].toFixed(2))
+            d3.select("#corecpi_change").text(monthlyArrows[13])
+            d3.select("#rw_value").text(monthlyData[14].toFixed(2))
+            d3.select("#rw_change").text(monthlyArrows[14])
+            d3.select("#jo_value").text(monthlyData[15].toFixed(2))
+            d3.select("#jo_change").text(monthlyArrows[15])
+
+
+            $("td:contains(▲)").css("color", "#81A43E");
+            $("td:contains(▼)").css("color", "#D72027");
+            $("td:contains(◀▶)").css("color", "#F6921E");
+
+            $(document).ready(function() {
+                var positivecount = $("td:contains(▲)").length;
+                var negativecount = $("td:contains(▼)").length;
+                var neutralcount = $("td:contains(◀▶)").length;
+                   d3.select("#selectmonth").html(formatDate(h))
+                d3.select("#negativecount").html("<b>"+negativecount+"</b>")
+                d3.select("#positivecount").html("<b>"+positivecount+"<b>")
+                d3.select("#neutralcount").html("<b>"+neutralcount+"<b>")
+
+                function preposition(count){
+                    if(count>1){
+                        return "were"
+                    }
+                    else{
+                        return "was"
+                    }
+                }
+
+                positivepreposition=preposition(positivecount)
+                negativepreposition=preposition(negativecount)
+                neutralpreposition=preposition(neutralcount)
+
+                d3.select("#negativepreposition").html(negativepreposition)
+                d3.select("#positivepreposition").html(positivepreposition)
+                d3.select("#neutralpreposition").html(neutralpreposition)
+
+            });
+
+
+        }
+
+
+    })
+    </script>
+</body>
